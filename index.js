@@ -18,7 +18,8 @@ AFRAME.registerComponent('animation', {
     delay: {default: 0},
     direction: {default: ''},
     duration: {default: 1000},
-    easing: {default: 'easeOutElastic'},
+    easing: {default: 'easeInQuad'},
+    elasticity: {default: 400},
     loop: {default: false},
     property: {default: ''},
     to: {default: ''}
@@ -32,39 +33,40 @@ AFRAME.registerComponent('animation', {
   },
 
   update: function () {
+    var attrName = this.attrName;
     var data = this.data;
     var el = this.el;
-    var from = AFRAME.utils.entity.getComponentProperty(el, data.property);
     var propType = getPropertyType(el, data.property);
 
+    // Base config.
     var config = {
       autoplay: false,
+      begin: function () {
+        el.emit('animation-start');
+        el.emit(attrName + '-start');
+      },
+      complete: function () {
+        el.emit('animation-end');
+        el.emit(attrName + '-end');
+      },
       direction: data.direction,
       duration: data.duration,
-      loop: data.loop,
+      easing: data.easing,
+      elasticity: data.elasticity,
+      loop: data.loop
     };
 
-    if (propType === 'vec3') {
-      var to = AFRAME.utils.coordinates.parse(data.to);
-      config = AFRAME.utils.extend({}, config, {
-        targets: [from],
-        update: function () {
-          AFRAME.utils.entity.setComponentProperty(el, data.property, this.targets[0]);
-        }
-      }, to);
-    } else {
-      config = AFRAME.utils.extend({}, config, {
-        targets: [{property: from}],
-        property: data.to,
-        update: function () {
-          AFRAME.utils.entity.setComponentProperty(el, data.property,
-                                                   this.targets[0].property);
-        }
-      });
+    // Customize config based on property type.
+    var updateConfig = configDefault;
+    if (propType === 'vec2' || propType === 'vec3' || propType === 'vec4') {
+      updateConfig = configVector;
     }
 
+    // Stop previous animation.
     this.stopAnimation();
-    this.animation = anime(config);
+
+    // Create animation.
+    this.animation = anime(updateConfig(el, data, config));
   },
 
   remove: function () {
@@ -91,14 +93,45 @@ AFRAME.registerComponent('animation', {
   }
 });
 
+/**
+ * Stuff property into generic `property` key.
+ */
+function configDefault (el, data, config) {
+  var from = getComponentProperty(el, data.property);
+  return AFRAME.utils.extend({}, config, {
+    targets: [{property: from}],
+    property: data.to,
+    update: function () {
+      setComponentProperty(el, data.property, this.targets[0].property);
+    }
+  });
+}
+
+/**
+ * Extend x/y/z/w onto the config.
+ */
+function configVector (el, data, config) {
+  var from = getComponentProperty(el, data.property);
+  var to = AFRAME.utils.coordinates.parse(data.to);
+  return AFRAME.utils.extend({}, config, {
+    targets: [from],
+    update: function () {
+      setComponentProperty(el, data.property, this.targets[0]);
+    }
+  }, to);
+}
+
 function getPropertyType (el, property) {
   var split = property.split('.');
   var componentName = split[0];
   var propertyName = split[1];
-  var schema = (el.components[componentName] || AFRAME.components[componentName]).schema;
+  var component = el.components[componentName] || AFRAME.components[componentName];
+
+  // Primitives.
+  if (!component) { return null; }
 
   if (propertyName) {
-    return schema[propertyName].type;
+    return component.schema[propertyName].type;
   }
-  return schema.type;
+  return component.schema.type;
 }
