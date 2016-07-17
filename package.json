@@ -50,5 +50,8 @@
       "examples/build.js",
       "dist/**"
     ]
+  },
+  "dependencies": {
+    "animejs": "^1.1.0"
   }
 }

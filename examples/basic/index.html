@@ -5,8 +5,15 @@
   </head>
   <body>
     <a-scene>
-      <a-assets></a-assets>
-      <a-entity geometry="primitive: box" material="color: #C03546"></a-entity>
+      <a-entity geometry="primitive: box" material="color: #CCC"
+                animation__color="property: material.color; direction: alternate;
+                                  duration: 3000; loop: true; to: #333"
+                animation__rotate="property: rotation; loop: true; to: 0 360 0"></a-entity>
+
+      <a-light type="ambient" color="#333"></a-light>
+      <a-light type="directional" position="-1 1 -0.5"></a-light>
+      <a-light type="directional" position="1 1 0.5" intensity=".5"></a-light>
+      <a-sky color="#EEE"></a-sky>
     </a-scene>
   </body>
 </html>
