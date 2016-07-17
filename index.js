@@ -34,26 +34,34 @@ AFRAME.registerComponent('animation', {
   update: function () {
     var data = this.data;
     var el = this.el;
-
-    var value = AFRAME.utils.entity.getComponentProperty(el, data.property);
-
-    if (value.constructor === String) {
-      var target = {};
-      target[data.property] = value;
-      value = target;
-    }
+    var from = AFRAME.utils.entity.getComponentProperty(el, data.property);
+    var propType = getPropertyType(el, data.property);
 
     var config = {
-      targets: [value],
       autoplay: false,
       direction: data.direction,
       duration: data.duration,
       loop: data.loop,
-      update: function () {
-        AFRAME.utils.entity.setComponentProperty(el, data.property, value[data.property]);
-      }
     };
-    config[data.property] = data.to;
+
+    if (propType === 'vec3') {
+      var to = AFRAME.utils.coordinates.parse(data.to);
+      config = AFRAME.utils.extend({}, config, {
+        targets: [from],
+        update: function () {
+          AFRAME.utils.entity.setComponentProperty(el, data.property, this.targets[0]);
+        }
+      }, to);
+    } else {
+      config = AFRAME.utils.extend({}, config, {
+        targets: [{property: from}],
+        property: data.to,
+        update: function () {
+          AFRAME.utils.entity.setComponentProperty(el, data.property,
+                                                   this.targets[0].property);
+        }
+      });
+    }
 
     this.stopAnimation();
     this.animation = anime(config);
