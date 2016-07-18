@@ -1,12 +1,85 @@
 ## aframe-animation-component
 
-An Animation component for [A-Frame](https://aframe.io).
+An animation component for [A-Frame](https://aframe.io) using
+[animejs](https://github.com/juliangarnier/anime).
+
+### Why?
+
+A-Frame has an `<a-animation>` API out of the box. Why build a component version?
+
+- **Imperative Ergonomics:** Imperatively set animations and all of its
+  properties with a single `setAttribute` call. With `<a-animation>`, we must
+  do `createElement`, multiple `setAttribute`s, `appendChild`, and
+  `addEventListener('loaded')`.
+- **Synchronous:** Setting a component is synchronous, meaning it takes effect
+  immediately. With `<a-animation>`, we must wait for it to append to the DOM
+  and register a callback listener.
+- **Consistency with the Framework:** The animation component fits into
+  A-Frame's entity-component-system framework. The `<a-animation>` tag is the
+  only outlier in which we must use a DOM element to modify an entity.
+- **Simpler API:** The animation component uses animejs, a popular and simple
+  JavaScript animation library. `<a-animation>`'s API is loosely based off of
+  Web Animations draft specification which is overly complex.
+- **Easier Maintenance:** The animation component uses A-Frame's component API
+  as well as animejs. `<a-animation>` uses the Custom Element polyfill directly
+  with tween.js. animejs's features makes the animation codebase much slimmer.
+- **Features:** The animation component has the features of the newly popular
+  animejs library (e.g., color interpolation).
+- **Faster Development:** Being detached from the A-Frame core library means faster
+  iteration of features. Due to being easier to maintain, having more features, and
+  not being tied to A-Frame versions, we can add things quickly such as timeline support.
 
 ### API
 
-| Property | Description | Default Value |
-| -------- | ----------- | ------------- |
-|          |             |               |
+#### Component Name
+
+Base name is `animation`. Although we can attach multiple animations to one
+entity by name-spacing the component with double underscores (`__`):
+
+```html
+<a-entity animation="property: rotation"
+          animation__2="property: position"
+          animation__color="property: material.color"></a-entity>
+```
+
+#### Properties
+
+| Property   | Description                                                                                                                           | Default Value | Values                  |
+| --------   | -----------                                                                                                                           | ------------- | ------                  |
+| delay      | How long (milliseconds) to wait before starting.                                                                                      | 0             |                         |
+| direction  | Which direction to go from `from` to `to`.                                                                                            | normal        | alternate, reverse      |
+| duration   | How long (milliseconds) each cycle of the animation is.                                                                               | 1000          |                         |
+| easing     | Easing function of animation. To ease in, ease out, ease in and out.                                                                  | easeInQuad    | See [easings](#easings) |
+| elasticity | How much to bounce (higher is stronger).                                                                                              | 400           |                         |
+| loop       | Whether to repeat animation indefinitely.                                                                                             | false         |                         |
+| property   | Property to animate. Can be a component name, a dot-delimited property of a component (e.g., `material.color`), or a plain attribute. |               |                         |
+| round      | Whether to round values.                                                                                                              | false         |                         |
+
+#### Easings
+
+Choose one type from the `Type` column, and combine it with one function from
+the `Function` column. For example: `easeInOutElastic`. The only exception is
+`linear` which stands on its own.
+
+| Type      | Function |
+| --------  | -------- |
+| easeIn    | Quad     |
+| easeOut   | Cubic    |
+| easeInOut | Quart    |
+|           | Quint    |
+|           | Expo     |
+|           | Sine     |
+|           | Circ     |
+|           | Elastic  |
+|           | Back     |
+|           | Bounce   |
+
+#### Events
+
+| Property       | Description        |
+| --------       | -----------        |
+| animationstart | Animation started. |
+| animationend   | Animation ended.   |
 
 ### Installation
 
@@ -17,13 +90,20 @@ Install and use by directly including the [browser files](dist):
 ```html
 <head>
   <title>My A-Frame Scene</title>
-  <script src="https://aframe.io/releases/0.2.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.3.0/aframe.min.js"></script>
   <script src="https://rawgit.com/ngokevin/aframe-animation-component/master/dist/aframe-animation-component.min.js"></script>
 </head>
 
 <body>
   <a-scene>
-    <a-entity animation="exampleProp: exampleVal"></a-entity>
+    <a-cylinder color="#F55" radius="0.1"
+                animation="property: color; direction: alternate; duration: 1000;
+                                  easing: easeInSine; loop: true; to: #5F5"
+                animation__scale="property: scale; direction: alternate; duration: 200;
+                                  easing: easeInSine; loop: true; to: 1.2 1 1.2"
+                animation__yoyo="property: position; direction: alternate; duration: 1000;
+                                 easing: easeInSine; loop: true; to: 0 2 0">
+    </a-cylinder>
   </a-scene>
 </body>
 ```
