@@ -26,7 +26,8 @@ A-Frame has an `<a-animation>` API out of the box. Why build a component version
   Web Animations draft specification which is overly complex.
 - **Easier Maintenance:** The animation component uses A-Frame's component API
   as well as anime.js. `<a-animation>` uses the Custom Element polyfill directly
-  with tween.js. anime.js's features makes the animation codebase much slimmer.
+  with tween.js. anime.js's features makes the animation codebase much slimmer
+  (140 vs 550 lines of code).
 - **Features:** The animation component has the features of the newly popular
   anime.js library (e.g., color interpolation).
 - **Faster Development:** Being detached from the A-Frame core library means faster
