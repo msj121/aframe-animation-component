@@ -98,9 +98,9 @@ Install and use by directly including the [browser files](dist):
   <a-scene>
     <a-cylinder color="#F55" radius="0.1"
                 animation="property: color; direction: alternate; duration: 1000;
-                                  easing: easeInSine; loop: true; to: #5F5"
+                           easing: easeInSine; loop: true; to: #5F5"
                 animation__scale="property: scale; direction: alternate; duration: 200;
-                                  easing: easeInSine; loop: true; to: 1.2 1 1.2"
+                           easing: easeInSine; loop: true; to: 1.2 1 1.2"
                 animation__yoyo="property: position; direction: alternate; duration: 1000;
                                  easing: easeInSine; loop: true; to: 0 2 0">
     </a-cylinder>
