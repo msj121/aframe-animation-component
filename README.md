@@ -1,5 +1,7 @@
 ## aframe-animation-component
 
+> Currently depends on 0.3.0 or the master branch of A-Frame.
+
 An animation component for [A-Frame](https://aframe.io) using
 [anime.js](https://github.com/juliangarnier/anime).
 
