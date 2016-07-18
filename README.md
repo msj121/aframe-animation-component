@@ -1,7 +1,7 @@
 ## aframe-animation-component
 
 An animation component for [A-Frame](https://aframe.io) using
-[animejs](https://github.com/juliangarnier/anime).
+[anime.js](https://github.com/juliangarnier/anime).
 
 ### Why?
 
@@ -17,14 +17,14 @@ A-Frame has an `<a-animation>` API out of the box. Why build a component version
 - **Consistency with the Framework:** The animation component fits into
   A-Frame's entity-component-system framework. The `<a-animation>` tag is the
   only outlier in which we must use a DOM element to modify an entity.
-- **Simpler API:** The animation component uses animejs, a popular and simple
+- **Simpler API:** The animation component uses anime.js, a popular and simple
   JavaScript animation library. `<a-animation>`'s API is loosely based off of
   Web Animations draft specification which is overly complex.
 - **Easier Maintenance:** The animation component uses A-Frame's component API
-  as well as animejs. `<a-animation>` uses the Custom Element polyfill directly
-  with tween.js. animejs's features makes the animation codebase much slimmer.
+  as well as anime.js. `<a-animation>` uses the Custom Element polyfill directly
+  with tween.js. anime.js's features makes the animation codebase much slimmer.
 - **Features:** The animation component has the features of the newly popular
-  animejs library (e.g., color interpolation).
+  anime.js library (e.g., color interpolation).
 - **Faster Development:** Being detached from the A-Frame core library means faster
   iteration of features. Due to being easier to maintain, having more features, and
   not being tied to A-Frame versions, we can add things quickly such as timeline support.
