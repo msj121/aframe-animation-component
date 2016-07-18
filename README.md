@@ -3,6 +3,8 @@
 An animation component for [A-Frame](https://aframe.io) using
 [anime.js](https://github.com/juliangarnier/anime).
 
+![animation](https://cloud.githubusercontent.com/assets/674727/16903995/34a56db0-4c42-11e6-9bd1-356b291f2d93.gif)
+
 ### Why?
 
 A-Frame has an `<a-animation>` API out of the box. Why build a component version?
